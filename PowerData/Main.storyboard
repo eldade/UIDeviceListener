@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="bzS-yt-dVV">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <scenes>
+        <!--Dict Display View Controller-->
+        <scene sceneID="zIw-a2-f0K">
+            <objects>
+                <viewController id="bzS-yt-dVV" customClass="DictDisplayViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="m6t-58-nZ8"/>
+                        <viewControllerLayoutGuide type="bottom" id="twb-Iu-9l9"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="OV0-Ls-mrE">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="SRd-Id-Fbj">
+                                <rect key="frame" x="180" y="208" width="240" height="128"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="SRd-Id-Fbj" firstAttribute="width" secondItem="OV0-Ls-mrE" secondAttribute="width" id="aJr-da-cq9"/>
+                            <constraint firstItem="SRd-Id-Fbj" firstAttribute="centerY" secondItem="OV0-Ls-mrE" secondAttribute="centerY" id="lIt-JS-dpe"/>
+                            <constraint firstItem="SRd-Id-Fbj" firstAttribute="height" secondItem="OV0-Ls-mrE" secondAttribute="height" id="x2f-Ou-PMR"/>
+                            <constraint firstItem="SRd-Id-Fbj" firstAttribute="centerX" secondItem="OV0-Ls-mrE" secondAttribute="centerX" id="xFB-J6-lFd"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="textView" destination="SRd-Id-Fbj" id="M3a-Pz-25v"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="edF-KP-Ifs" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="318" y="491"/>
+        </scene>
+    </scenes>
+</document>
