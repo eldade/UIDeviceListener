@@ -22,11 +22,11 @@
 		51BDCC8B1CD1DFEC000519E2 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		51BDCC931CD1DFEC000519E2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		51BDCC981CD1DFEC000519E2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		51BDCC9E1CD1E04C000519E2 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = ../Main.storyboard; sourceTree = "<group>"; };
-		51BDCC9F1CD1E04C000519E2 /* DictDisplayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DictDisplayViewController.h; path = ../DictDisplayViewController.h; sourceTree = "<group>"; };
-		51BDCCA01CD1E04C000519E2 /* DictDisplayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DictDisplayViewController.m; path = ../DictDisplayViewController.m; sourceTree = "<group>"; };
-		51BDCCA11CD1E04C000519E2 /* UIDeviceListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIDeviceListener.h; path = ../UIDeviceListener.h; sourceTree = "<group>"; };
-		51BDCCA21CD1E04C000519E2 /* UIDeviceListener.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = UIDeviceListener.mm; path = ../UIDeviceListener.mm; sourceTree = "<group>"; };
+		51BDCC9E1CD1E04C000519E2 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		51BDCC9F1CD1E04C000519E2 /* DictDisplayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DictDisplayViewController.h; sourceTree = "<group>"; };
+		51BDCCA01CD1E04C000519E2 /* DictDisplayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DictDisplayViewController.m; sourceTree = "<group>"; };
+		51BDCCA11CD1E04C000519E2 /* UIDeviceListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIDeviceListener.h; sourceTree = "<group>"; };
+		51BDCCA21CD1E04C000519E2 /* UIDeviceListener.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = UIDeviceListener.mm; sourceTree = "<group>"; };
 		51BDCCA71CD1F11D000519E2 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -297,6 +297,7 @@
 				51BDCC9D1CD1DFEC000519E2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
