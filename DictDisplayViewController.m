@@ -31,14 +31,17 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    void (^dictUpdatedBlock)(CFDictionaryRef newDict) = ^void(CFDictionaryRef newDict) {
-        NSDictionary *dict = CFBridgingRelease(newDict);
-        self.textView.text = [dict description];
-    };
-    
     UIDeviceListener *listener = [UIDeviceListener sharedUIDeviceListener];
     
-    [listener startListenerWithNotificationBlock: dictUpdatedBlock];
+    [listener startListenerWithNotificationBlock:^(CFDictionaryRef newDict) {
+        NSDictionary *dict = CFBridgingRelease(newDict);
+        self.textView.text = [dict description];
+        [[UIDeviceListener sharedUIDeviceListener] stopListener];
+        [[UIDeviceListener sharedUIDeviceListener] startListenerWithNotificationBlock:^(CFDictionaryRef newDict) {
+            NSDictionary *dict = CFBridgingRelease(newDict);
+            self.textView.text = [dict description];
+        }];
+    }];
 }
 
 - (void)didReceiveMemoryWarning {
