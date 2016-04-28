@@ -9,10 +9,10 @@
 /* Begin PBXBuildFile section */
 		51BDCC891CD1DFEC000519E2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 51BDCC881CD1DFEC000519E2 /* main.m */; };
 		51BDCC8C1CD1DFEC000519E2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 51BDCC8B1CD1DFEC000519E2 /* AppDelegate.m */; };
-		51BDCC8F1CD1DFEC000519E2 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51BDCC8E1CD1DFEC000519E2 /* ViewController.m */; };
-		51BDCC921CD1DFEC000519E2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 51BDCC901CD1DFEC000519E2 /* Main.storyboard */; };
 		51BDCC941CD1DFEC000519E2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 51BDCC931CD1DFEC000519E2 /* Assets.xcassets */; };
-		51BDCC971CD1DFEC000519E2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 51BDCC951CD1DFEC000519E2 /* LaunchScreen.storyboard */; };
+		51BDCCA31CD1E04C000519E2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 51BDCC9E1CD1E04C000519E2 /* Main.storyboard */; };
+		51BDCCA41CD1E04C000519E2 /* DictDisplayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51BDCCA01CD1E04C000519E2 /* DictDisplayViewController.m */; };
+		51BDCCA51CD1E04C000519E2 /* UIDeviceListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 51BDCCA21CD1E04C000519E2 /* UIDeviceListener.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,12 +20,14 @@
 		51BDCC881CD1DFEC000519E2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		51BDCC8A1CD1DFEC000519E2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		51BDCC8B1CD1DFEC000519E2 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		51BDCC8D1CD1DFEC000519E2 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		51BDCC8E1CD1DFEC000519E2 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		51BDCC911CD1DFEC000519E2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		51BDCC931CD1DFEC000519E2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		51BDCC961CD1DFEC000519E2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		51BDCC981CD1DFEC000519E2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		51BDCC9E1CD1E04C000519E2 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = ../Main.storyboard; sourceTree = "<group>"; };
+		51BDCC9F1CD1E04C000519E2 /* DictDisplayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DictDisplayViewController.h; path = ../DictDisplayViewController.h; sourceTree = "<group>"; };
+		51BDCCA01CD1E04C000519E2 /* DictDisplayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DictDisplayViewController.m; path = ../DictDisplayViewController.m; sourceTree = "<group>"; };
+		51BDCCA11CD1E04C000519E2 /* UIDeviceListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIDeviceListener.h; path = ../UIDeviceListener.h; sourceTree = "<group>"; };
+		51BDCCA21CD1E04C000519E2 /* UIDeviceListener.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = UIDeviceListener.mm; path = ../UIDeviceListener.mm; sourceTree = "<group>"; };
+		51BDCCA71CD1F11D000519E2 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +44,7 @@
 		51BDCC7B1CD1DFEC000519E2 = {
 			isa = PBXGroup;
 			children = (
+				51BDCCA71CD1F11D000519E2 /* LICENSE */,
 				51BDCC861CD1DFEC000519E2 /* PowerData */,
 				51BDCC851CD1DFEC000519E2 /* Products */,
 			);
@@ -58,13 +61,10 @@
 		51BDCC861CD1DFEC000519E2 /* PowerData */ = {
 			isa = PBXGroup;
 			children = (
-				51BDCC8A1CD1DFEC000519E2 /* AppDelegate.h */,
-				51BDCC8B1CD1DFEC000519E2 /* AppDelegate.m */,
-				51BDCC8D1CD1DFEC000519E2 /* ViewController.h */,
-				51BDCC8E1CD1DFEC000519E2 /* ViewController.m */,
-				51BDCC901CD1DFEC000519E2 /* Main.storyboard */,
+				51BDCCA61CD1F034000519E2 /* UI */,
+				51BDCCA11CD1E04C000519E2 /* UIDeviceListener.h */,
+				51BDCCA21CD1E04C000519E2 /* UIDeviceListener.mm */,
 				51BDCC931CD1DFEC000519E2 /* Assets.xcassets */,
-				51BDCC951CD1DFEC000519E2 /* LaunchScreen.storyboard */,
 				51BDCC981CD1DFEC000519E2 /* Info.plist */,
 				51BDCC871CD1DFEC000519E2 /* Supporting Files */,
 			);
@@ -74,9 +74,21 @@
 		51BDCC871CD1DFEC000519E2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				51BDCC8A1CD1DFEC000519E2 /* AppDelegate.h */,
+				51BDCC8B1CD1DFEC000519E2 /* AppDelegate.m */,
 				51BDCC881CD1DFEC000519E2 /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		51BDCCA61CD1F034000519E2 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				51BDCC9E1CD1E04C000519E2 /* Main.storyboard */,
+				51BDCC9F1CD1E04C000519E2 /* DictDisplayViewController.h */,
+				51BDCCA01CD1E04C000519E2 /* DictDisplayViewController.m */,
+			);
+			name = UI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -136,9 +148,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				51BDCC971CD1DFEC000519E2 /* LaunchScreen.storyboard in Resources */,
 				51BDCC941CD1DFEC000519E2 /* Assets.xcassets in Resources */,
-				51BDCC921CD1DFEC000519E2 /* Main.storyboard in Resources */,
+				51BDCCA31CD1E04C000519E2 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -149,32 +160,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				51BDCC8F1CD1DFEC000519E2 /* ViewController.m in Sources */,
 				51BDCC8C1CD1DFEC000519E2 /* AppDelegate.m in Sources */,
+				51BDCCA41CD1E04C000519E2 /* DictDisplayViewController.m in Sources */,
 				51BDCC891CD1DFEC000519E2 /* main.m in Sources */,
+				51BDCCA51CD1E04C000519E2 /* UIDeviceListener.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		51BDCC901CD1DFEC000519E2 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				51BDCC911CD1DFEC000519E2 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		51BDCC951CD1DFEC000519E2 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				51BDCC961CD1DFEC000519E2 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		51BDCC991CD1DFEC000519E2 /* Debug */ = {
@@ -266,8 +259,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = PowerData/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.eldade.powerdata.PowerData;
+				PRODUCT_BUNDLE_IDENTIFIER = com.eldade.PowerData;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -277,8 +271,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = PowerData/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.eldade.powerdata.PowerData;
+				PRODUCT_BUNDLE_IDENTIFIER = com.eldade.PowerData;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

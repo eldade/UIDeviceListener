@@ -18,12 +18,20 @@
  */
 
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+#define __kCFAllocatorGCObjectMemory 0x400      /* GC:  memory needs to be finalized. */
 
-@property (strong, nonatomic) UIWindow *window;
+@interface UIDeviceListener : NSObject
+{
+    NSThread *listenerThread;
+    
+    Class dictionaryClass;
+    
+    void (^ dictReadyBlock)(CFDictionaryRef powerDict);
+}
 
++ (instancetype) sharedUIDeviceListener;
+- (void) startListenerWithNotificationBlock: (void (^)(CFDictionaryRef))dictReadyBlockParam;
 
 @end
-
