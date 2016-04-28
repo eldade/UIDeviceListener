@@ -8,7 +8,7 @@ PowerData presents raw data from the system regarding battery capacity, cycle co
 The information presented by this program can be gathered relatively easily using IOKit, and is available in the IORegistry. What's unique about PowerData is that it obtains this data without invoking any private APIs of any kind (!!). This is not a case of obfuscation or any kind of trickery where we're just hiding or covertly calling private APIs. They're just not called.
 
 ###Can this be used on the App Store?
-I have successfully used this in production code on the App Store, but YMMV. 
+I have seen this code successfully used in production code on the App Store, but YMMV. 
 
 The App Store generally has two levels of private API tests. One test takes place at the moment of submission, and is essentially a simple static check to make sure your binary contains to references to any private APIs. PowerData will pass this test because it simply doesn't rely on any private APIs. The second test, which appears to only be performed on apps that are deemed suspicious by the App Store team, will also not detect PowerData. Again, PowerData obtains "private" data, but it does so without invoking any private interfaces.
 
