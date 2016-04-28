@@ -14,7 +14,7 @@
  *
  *    You should have received a copy of the GNU General Public License
  *    along with PowerData.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * 
  */
 
 
@@ -32,6 +32,8 @@
 }
 
 + (instancetype) sharedUIDeviceListener;
-- (void) startListenerWithNotificationBlock: (void (^)(CFDictionaryRef))dictReadyBlockParam;
+
+- (void) startListenerWithNotificationBlock: (void (^)(CFDictionaryRef newDict))dictReadyBlockParam;
+- (void) stopListener;
 
 @end

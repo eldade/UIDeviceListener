@@ -56,7 +56,7 @@
 #if DEBUG==1
 NSThread *listenerThreadDbg;
 
-void checkMainThread()
+void verifyListenerThread()
 {
     if ([NSThread currentThread] != listenerThreadDbg)
     {
@@ -65,14 +65,14 @@ void checkMainThread()
     }
 }
 
-#define CHECK_MAIN_THREAD() checkMainThread()
+#define VERIFY_LISTENER_THREAD() verifyListenerThread()
 #else
-#define CHECK_MAIN_THREAD()
+#define VERIFY_LISTENER_THREAD()
 #endif
 
 void * myAlloc (CFIndex allocSize, CFOptionFlags hint, void *info)
 {
-    CHECK_MAIN_THREAD();
+    VERIFY_LISTENER_THREAD();
     
     void *newAllocation = CFAllocatorAllocate([UIDeviceListener sharedUIDeviceListener].defaultAllocator, allocSize, hint);
     
@@ -88,7 +88,7 @@ void * myAlloc (CFIndex allocSize, CFOptionFlags hint, void *info)
 
 void *	myRealloc(void *ptr, CFIndex newsize, CFOptionFlags hint, void *info)
 {
-    CHECK_MAIN_THREAD();
+    VERIFY_LISTENER_THREAD();
 
     [UIDeviceListener sharedUIDeviceListener].allocations->erase(ptr);
     void *newAllocation = CFAllocatorReallocate([UIDeviceListener sharedUIDeviceListener].defaultAllocator, ptr, newsize, hint);
@@ -104,7 +104,7 @@ void *	myRealloc(void *ptr, CFIndex newsize, CFOptionFlags hint, void *info)
 
 void myFree(void *ptr, void *info)
 {
-    CHECK_MAIN_THREAD();
+    VERIFY_LISTENER_THREAD();
 
     CFAllocatorDeallocate([UIDeviceListener sharedUIDeviceListener].defaultAllocator, ptr);
 
@@ -136,13 +136,6 @@ void myFree(void *ptr, void *info)
     _allocations = new std::set<void *>;
     _defaultAllocator = CFAllocatorGetDefault();
     
-    return self;
-}
-
-- (void) startListenerWithNotificationBlock: (void (^)(CFDictionaryRef))dictReadyBlockParam
-{
-    dictReadyBlock = dictReadyBlockParam;
-    
     listenerThread = [[NSThread alloc] initWithTarget: self selector: @selector(listenerThreadMain) object: nil];
     listenerThread.name = @"UIDeviceListener";
     
@@ -150,11 +143,48 @@ void myFree(void *ptr, void *info)
     listenerThreadDbg = listenerThread;
 #endif
     
+    // Start the listener thread. Actual listening to UIDevice won't start until we
+    // invoke startListenerWithNotificationBlock:
     [listenerThread start];
+    
+    return self;
+}
+
+- (void) startListenerWithNotificationBlock: (void (^)(CFDictionaryRef newDict))dictReadyBlockParam
+{
+    dictReadyBlock = dictReadyBlockParam;
+    [self performSelector: @selector(startListenerWorker) onThread:listenerThread withObject:nil waitUntilDone:YES];
+}
+
+- (void) stopListener
+{
+    [self performSelector: @selector(stopListenerWorker) onThread:listenerThread withObject:nil waitUntilDone:YES];
+    dictReadyBlock = nil;
+}
+
+- (void) startListenerWorker
+{
+    VERIFY_LISTENER_THREAD();
+    [UIDevice currentDevice].batteryMonitoringEnabled = YES;
+}
+
+- (void) stopListenerWorker
+{
+    VERIFY_LISTENER_THREAD();
+    [UIDevice currentDevice].batteryMonitoringEnabled = NO;
+}
+
+- (void) dummyTimer: (NSTimer *) timer
+{
+    NSLog(@"Should never be called");
 }
 
 - (void) listenerThreadMain
 {
+    // The following NSTimer will never be called and is installed simply to keep this thread's
+    // run loop running in perpetuity.
+    [NSTimer scheduledTimerWithTimeInterval: [NSDate distantFuture].timeIntervalSinceNow target: self selector: @selector(dummyTimer:) userInfo:nil repeats:YES];
+    
     CFRunLoopObserverRef observer = CFRunLoopObserverCreateWithHandler(_defaultAllocator, (kCFRunLoopAfterWaiting), YES, 0, ^(CFRunLoopObserverRef observer, CFRunLoopActivity activity) {
         // A source is about to fire. On this thread there are no sources other than the UIDevice IOKit
         // notification port... All we do here is just clear the allocations set. That way when our
@@ -177,8 +207,6 @@ void myFree(void *ptr, void *info)
     
     _myAllocator = CFAllocatorCreate(NULL, &context);
     CFAllocatorSetDefault(_myAllocator);
-    
-    [UIDevice currentDevice].batteryMonitoringEnabled = YES;
     
     [[NSRunLoop currentRunLoop] run];
 }
@@ -251,7 +279,7 @@ void myFree(void *ptr, void *info)
                         // Notify that new data is available, but that has to happen on the main thread.
                         // Because of the CFAllocator replacement, we generally shouldn't
                         // do ANYTHING on this thread other than stealing this dictionary from UIDevice...
-                        dispatch_sync(dispatch_get_main_queue(), ^{
+                        dispatch_async(dispatch_get_main_queue(), ^{
                             // NOTE: The block receives ownership of the latestDictionary and is
                             // responsible for freeing it!
                             dictReadyBlock(latestDictionary);
