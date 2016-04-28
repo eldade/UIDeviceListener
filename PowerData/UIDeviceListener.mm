@@ -152,26 +152,37 @@ void myFree(void *ptr, void *info)
 
 - (void) startListenerWithNotificationBlock: (void (^)(CFDictionaryRef newDict))dictReadyBlockParam
 {
-    dictReadyBlock = dictReadyBlockParam;
-    [self performSelector: @selector(startListenerWorker) onThread:listenerThread withObject:nil waitUntilDone:YES];
+    [self performSelector: @selector(startListenerWorker:) onThread:listenerThread withObject:dictReadyBlockParam waitUntilDone:YES];
 }
 
 - (void) stopListener
 {
     [self performSelector: @selector(stopListenerWorker) onThread:listenerThread withObject:nil waitUntilDone:YES];
-    dictReadyBlock = nil;
 }
 
-- (void) startListenerWorker
+- (void) startListenerWorker: (id) block
 {
     VERIFY_LISTENER_THREAD();
-    [UIDevice currentDevice].batteryMonitoringEnabled = YES;
+    
+    if ([UIDevice currentDevice].isBatteryMonitoringEnabled == NO)
+    {
+        [[UIDevice currentDevice] addObserver: self forKeyPath: @"batteryState" options:NSKeyValueObservingOptionNew context: (void *) block];
+        [[UIDevice currentDevice] addObserver: self forKeyPath: @"batteryLevel" options:NSKeyValueObservingOptionNew context: (void *)  block];
+        
+        [UIDevice currentDevice].batteryMonitoringEnabled = YES;   
+    }
 }
 
 - (void) stopListenerWorker
 {
     VERIFY_LISTENER_THREAD();
-    [UIDevice currentDevice].batteryMonitoringEnabled = NO;
+    if ([UIDevice currentDevice].isBatteryMonitoringEnabled == YES)
+    {
+        [UIDevice currentDevice].batteryMonitoringEnabled = NO;
+        
+        [[UIDevice currentDevice] removeObserver: self forKeyPath: @"batteryState"];
+        [[UIDevice currentDevice] removeObserver: self forKeyPath: @"batteryLevel"];
+    }
 }
 
 - (void) dummyTimer: (NSTimer *) timer
@@ -191,9 +202,6 @@ void myFree(void *ptr, void *info)
         // KVO callback is called, we'll have fewer allocations to inspect:
         _allocations->clear();
     });
-    
-    [[UIDevice currentDevice] addObserver: self forKeyPath: @"batteryState" options:NSKeyValueObservingOptionNew context: nil];
-    [[UIDevice currentDevice] addObserver: self forKeyPath: @"batteryLevel" options:NSKeyValueObservingOptionNew context: nil];
     
     CFRunLoopRef mainLoop = CFRunLoopGetCurrent();
     CFRunLoopAddObserver(mainLoop, observer, kCFRunLoopCommonModes);
@@ -250,7 +258,7 @@ void myFree(void *ptr, void *info)
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
 {
-    if ([change objectForKey: NSKeyValueChangeNewKey] != nil)
+    if ([change objectForKey: NSKeyValueChangeNewKey] != nil && context != nil)
     {
         std::set<void *>::iterator it;
         for (it=_allocations->begin(); it!=_allocations->end(); ++it)
@@ -274,6 +282,8 @@ void myFree(void *ptr, void *info)
                     
                     CFDictionaryRef latestDictionary = (CFDictionaryRef) CFPropertyListCreateDeepCopy(_defaultAllocator, dict, kCFPropertyListImmutable);
                     
+                    void (^ dictReadyBlock)(CFDictionaryRef powerDict) = (__bridge void (^)(CFDictionaryRef)) context;
+                    
                     if (dictReadyBlock != nil && latestDictionary != nil)
                     {
                         // Notify that new data is available, but that has to happen on the main thread.
@@ -285,6 +295,7 @@ void myFree(void *ptr, void *info)
                             dictReadyBlock(latestDictionary);
                         });
                     }
+                    
                     return;
                 }
             }

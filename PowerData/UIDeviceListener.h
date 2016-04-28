@@ -26,9 +26,7 @@
 {
     NSThread *listenerThread;
     
-    Class dictionaryClass;
-    
-    void (^ dictReadyBlock)(CFDictionaryRef powerDict);
+    Class dictionaryClass;    
 }
 
 + (instancetype) sharedUIDeviceListener;
