@@ -7,6 +7,25 @@ PowerData presents raw data from the system regarding battery capacity, cycle co
 
 The information presented by this program can be gathered relatively easily using IOKit, and is available in the IORegistry. What's unique about PowerData is that it obtains this data without invoking any private APIs of any kind (!!). This is not a case of obfuscation or any kind of trickery where we're just hiding or covertly calling private APIs. They're just not called.
 
+###Usage
+
+Using `UIDeviceListener` is quite simple. First, copy the source files (`UIDeviceListener.h` and `UIDeviceListener.mm`) to your project. Then, initialize the listener as follows:
+
+```
+// dictUpdatedBlock will be called right when you call startListenerWithNotificationBlock: and then periodically, as the 
+// power data is updated:
+void (^dictUpdatedBlock)(CFDictionaryRef newDict) = ^void(CFDictionaryRef newDict) {
+   NSDictionary *chargerDict = CFBridgingRelease(newDict);
+   // Use your chargerDict here!
+};
+
+UIDeviceListener *listener = [UIDeviceListener sharedUIDeviceListener];
+
+[listener startListenerWithNotificationBlock: dictUpdatedBlock];
+```
+
+That's it!
+
 ###Can this be used on the App Store?
 I have seen this code successfully deployed in production code on the App Store, but YMMV. 
 
