@@ -15,6 +15,7 @@ The App Store generally has two levels of private API tests. One test takes plac
 ###So can I go ahead and submit a battery/charging information app that presents this data to end-users?
 Go ahead, but you're still likely to get rejected by Apple. Even though PowerData is likely to pass any technical tests Apple runs on your App, the App Review team consists of human beings who are likely to detect that your app presents information that Apple doesn't deem "end-user appropriate"... This ultimately happened to me, and the rejection comes in as section 2.19:
 >  2.19       Apps that provide incorrect diagnostic or other inaccurate device data will be rejected
+
 Of course, the data presented is about as accurate as it could ever be, but clearly Apple has decided that for now they're not willing to present this data to end-users, and so expect to get this rejection.
 
 ###What kind of power data can I get?
@@ -32,98 +33,8 @@ When the device is plugged in, there is rich information regarding the currently
 - Confirmation that the device is actually charging. On some power hungry iOS devices you will often see devices consuming *some* battery power even though they are plugged in.
 
 ### Sample dictionaries
-Here are a couple of sample dictionaries of actual output from PowerData. The dictionaries have different structures depending on what version of iOS the device is running. For iOS 8 and later, the dictionary is structured as follows:
+Here is a sample dictionary showing actual output from PowerData. Unfortunately the dictionaries have slight differences for different versions of iOS. Certain basic parameters are identical across all versions, but there are bits of data that are quite different across versions. Still, basics such as `AdapterDetails`, `AppleRawCurrentCapacity`, `AppleRawMaxCapacity`, and `CycleCount` are identical across all supported versions (iOS 7 through 9.3.1 as of April, 2016).
 
-####iOS 8 and later dictionary
-```
-{
-    AbsoluteCapacity = 7473;
-    AdapterDetails =     {
-        AdapterVoltage = 5000;
-        Amperage = 500;
-        Description = "usb host";
-        FamilyCode = "-536854528";
-        PMUConfiguration = 470;
-        Watts = 2;
-    };
-    AdapterInfo = 16384;
-    Amperage = 500;
-    AppleChargeRateLimitIndex = 0;
-    AppleRawAdapterDetails =     (
-                {
-            AdapterVoltage = 5000;
-            Amperage = 500;
-            Description = "usb host";
-            FamilyCode = "-536854528";
-            PMUConfiguration = 470;
-            Watts = 2;
-        },
-                {
-            AdapterVoltage = 5000;
-            Amperage = 0;
-            Description = batt;
-            FamilyCode = 0;
-            PMUConfiguration = 0;
-            Watts = 0;
-        }
-    );
-    AppleRawBrickIDVoltages =     (
-                (
-            39,
-            39
-        ),
-                (
-        )
-    );
-    AppleRawCurrentCapacity = 6984;
-    AppleRawExternalConnected = 1;
-    AppleRawMaxCapacity = 7321;
-    AtCriticalLevel = 0;
-    AtWarnLevel = 0;
-    BatteryInstalled = 1;
-    BatteryKey = "0003-default";
-    BestAdapterIndex = 0;
-    BootBBCapacity = 5199;
-    BootCapacityEstimate = 72;
-    BootVoltage = 3990;
-    CFBundleIdentifier = "com.apple.driver.AppleARMPlatform";
-    ChargerConfiguration = 2720;
-    CurrentCapacity = 7252;
-    CycleCount = 8;
-    DesignCapacity = 7161;
-    ExternalChargeCapable = 1;
-    ExternalConnected = 1;
-    FullyCharged = 0;
-    IOClass = AppleARMPMUCharger;
-    IOFunctionParentA1000000 = <>;
-    IOGeneralInterest = "IOCommand is not serializable";
-    IOMatchCategory = IODefaultMatchCategory;
-    IONameMatch = charger;
-    IONameMatched = charger;
-    IOPowerManagement =     {
-        CapabilityFlags = 32832;
-        CurrentPowerState = 2;
-        DevicePowerState = 2;
-        MaxPowerState = 2;
-    };
-    IOProbeScore = 1000;
-    IOProviderClass = IOService;
-    InstantAmperage = "-670";
-    IsCharging = 1;
-    Location = 0;
-    Manufacturer = 6;
-    MaxCapacity = 7400;
-    Model = "0003-6";
-    NominalChargeCapacity = 7681;
-    PresentDOD = 953;
-    Temperature = 2480;
-    TimeRemaining = 0;
-    UpdateTime = 1461830544;
-    Voltage = 4260;
-    "built-in" = 1;
-}
-```
-####iOS 7 dictionary
 ```
 {
     AdapterDetails =     {
