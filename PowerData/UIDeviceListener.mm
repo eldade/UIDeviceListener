@@ -150,14 +150,14 @@ void myFree(void *ptr, void *info)
     return self;
 }
 
-- (void) startListenerWithNotificationBlock: (void (^)(CFDictionaryRef newDict))dictReadyBlockParam
+- (void) startListenerWithNotificationBlock: (void (^)(NSDictionary *powerDataDictionary))dictReadyBlockParam
 {
-    [self performSelector: @selector(startListenerWorker:) onThread:listenerThread withObject:dictReadyBlockParam waitUntilDone:YES];
+    [self performSelector: @selector(startListenerWorker:) onThread:listenerThread withObject:dictReadyBlockParam waitUntilDone:NO];
 }
 
 - (void) stopListener
 {
-    [self performSelector: @selector(stopListenerWorker) onThread:listenerThread withObject:nil waitUntilDone:YES];
+    [self performSelector: @selector(stopListenerWorker) onThread:listenerThread withObject:nil waitUntilDone:NO];
 }
 
 - (void) startListenerWorker: (id) block
@@ -166,8 +166,10 @@ void myFree(void *ptr, void *info)
     
     if ([UIDevice currentDevice].isBatteryMonitoringEnabled == NO)
     {
-        [[UIDevice currentDevice] addObserver: self forKeyPath: @"batteryState" options:NSKeyValueObservingOptionNew context: (void *) block];
-        [[UIDevice currentDevice] addObserver: self forKeyPath: @"batteryLevel" options:NSKeyValueObservingOptionNew context: (void *)  block];
+        [[UIDevice currentDevice] addObserver: self forKeyPath: @"batteryState" options:NSKeyValueObservingOptionNew context: nil];
+        [[UIDevice currentDevice] addObserver: self forKeyPath: @"batteryLevel" options:NSKeyValueObservingOptionNew context: nil];
+        
+        dictReadyBlock = block;
         
         [UIDevice currentDevice].batteryMonitoringEnabled = YES;   
     }
@@ -182,6 +184,8 @@ void myFree(void *ptr, void *info)
         
         [[UIDevice currentDevice] removeObserver: self forKeyPath: @"batteryState"];
         [[UIDevice currentDevice] removeObserver: self forKeyPath: @"batteryLevel"];
+        
+        dictReadyBlock = nil;
     }
 }
 
@@ -258,7 +262,7 @@ void myFree(void *ptr, void *info)
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
 {
-    if ([change objectForKey: NSKeyValueChangeNewKey] != nil && context != nil)
+    if ([change objectForKey: NSKeyValueChangeNewKey] != nil)
     {
         std::set<void *>::iterator it;
         for (it=_allocations->begin(); it!=_allocations->end(); ++it)
@@ -282,17 +286,15 @@ void myFree(void *ptr, void *info)
                     
                     CFDictionaryRef latestDictionary = (CFDictionaryRef) CFPropertyListCreateDeepCopy(_defaultAllocator, dict, kCFPropertyListImmutable);
                     
-                    void (^ dictReadyBlock)(CFDictionaryRef powerDict) = (__bridge void (^)(CFDictionaryRef)) context;
-                    
                     if (dictReadyBlock != nil && latestDictionary != nil)
                     {
                         // Notify that new data is available, but that has to happen on the main thread.
                         // Because of the CFAllocator replacement, we generally shouldn't
                         // do ANYTHING on this thread other than stealing this dictionary from UIDevice...
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            // NOTE: The block receives ownership of the latestDictionary and is
-                            // responsible for freeing it!
-                            dictReadyBlock(latestDictionary);
+                        dispatch_sync(dispatch_get_main_queue(), ^{
+                            // Pass ownership of the CFDictionary to the main thread (using ARC):
+                            NSDictionary *newPowerDataDictionary = CFBridgingRelease(latestDictionary);
+                            dictReadyBlock(newPowerDataDictionary);
                         });
                     }
                     

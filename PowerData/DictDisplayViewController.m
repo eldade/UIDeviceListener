@@ -33,13 +33,11 @@
     
     UIDeviceListener *listener = [UIDeviceListener sharedUIDeviceListener];
     
-    [listener startListenerWithNotificationBlock:^(CFDictionaryRef newDict) {
-        NSDictionary *dict = CFBridgingRelease(newDict);
-        self.textView.text = [dict description];
+    [listener startListenerWithNotificationBlock:^(NSDictionary *powerDataDictionary) {
+        self.textView.text = [powerDataDictionary description];
         [[UIDeviceListener sharedUIDeviceListener] stopListener];
-        [[UIDeviceListener sharedUIDeviceListener] startListenerWithNotificationBlock:^(CFDictionaryRef newDict) {
-            NSDictionary *dict = CFBridgingRelease(newDict);
-            self.textView.text = [dict description];
+        [[UIDeviceListener sharedUIDeviceListener] startListenerWithNotificationBlock:^(NSDictionary *powerDataDictionary) {
+            self.textView.text = [powerDataDictionary description];
         }];
     }];
 }

@@ -26,12 +26,13 @@
 {
     NSThread *listenerThread;
     
-    Class dictionaryClass;    
+    Class dictionaryClass;
+    void (^ dictReadyBlock) (NSDictionary *powerDict);
 }
 
 + (instancetype) sharedUIDeviceListener;
 
-- (void) startListenerWithNotificationBlock: (void (^)(CFDictionaryRef newDict))dictReadyBlockParam;
+- (void) startListenerWithNotificationBlock: (void (^)(NSDictionary *powerDataDictionary))dictReadyBlockParam;
 - (void) stopListener;
 
 @end
