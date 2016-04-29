@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <title>Powerdata by eldoogy</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Powerdata</h1>
+        <h2></h2>
+
+        <section id="downloads">
+          <a href="https://github.com/eldoogy/PowerData/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/eldoogy/PowerData/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/eldoogy/PowerData" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h2>
+<a id="powerdata-sample-program-for-uidevicelistener" class="anchor" href="#powerdata-sample-program-for-uidevicelistener" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>PowerData (sample program for <code>UIDeviceListener</code>)</h2>
+
+<p>PowerData is a sample program that displays device power information for iOS devices. The magic is that this is done without relying on any private APIs. The underlying library, <code>UIDeviceListener</code>, is extremely easy to use and runs well on all recent versions of iOS.</p>
+
+<p>PowerData presents raw data from the system regarding battery capacity, cycle count, state of charge, and much much more. PowerData also presents detailed information regarding the currently plugged in power adapter. None of this is currently (as of iOS 9) available in any public API.</p>
+
+<h3>
+<a id="no-private-apis" class="anchor" href="#no-private-apis" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>No private APIs!</h3>
+
+<p>The information provided by <code>UIDeviceListener</code> is available in the IORegistry and can be gathered relatively easily by directly calling IOKit. <code>UIDeviceListener</code> doesn't employ any kind of obfuscation or any kind of trickery where we'd covertly call private APIs while attempting to hide that fact. They're just not called.</p>
+
+<h3>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h3>
+
+<p>Using <code>UIDeviceListener</code> is quite simple. First, copy the source files (<code>UIDeviceListener.h</code> and <code>UIDeviceListener.mm</code>) to your project. Then, initialize the listener as follows:</p>
+
+<pre><code>    UIDeviceListener *listener = [UIDeviceListener sharedUIDeviceListener];
+
+    [listener startListenerWithNotificationBlock:^(NSDictionary *powerDataDictionary) {
+      NSLog([powerDataDictionary description]);
+     }];
+
+</code></pre>
+
+<p>That's all there is to it. The block will be called when you first call startListenerWithNotificationBlock: and then periodically, as the power data is updated. On most devices this happens every 20 seconds or so, but it also happens in real-time as the device is plugged in and out. See below for a sample of the kind of data contained in the dictionary.</p>
+
+<h3>
+<a id="can-this-be-used-on-the-app-store" class="anchor" href="#can-this-be-used-on-the-app-store" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Can this be used on the App Store?</h3>
+
+<p>I have seen this code successfully deployed in production code on the App Store, but YMMV. </p>
+
+<p>The App Store generally has two levels of private API tests. One test takes place at the moment when a binary is submitted, and is essentially a simple static check to make sure your binary contains no references to any private API symbols. <code>UIDeviceListener</code> will pass this test because it simply doesn't rely on any private APIs. The second test, which appears to only be performed on apps that are deemed 'suspicious' by the App Store Review team, will also not detect <code>UIDeviceListener</code>. </p>
+
+<p>Again, <code>UIDeviceListener</code> does obtain "private" data, but it does so without invoking any private interfaces. Essentially, it is using public APIs to "steal" the relevant data from <code>UIDevice</code> in runtime.</p>
+
+<h3>
+<a id="so-can-i-go-ahead-and-submit-a-batterycharging-app-that-presents-this-data-to-my-end-users" class="anchor" href="#so-can-i-go-ahead-and-submit-a-batterycharging-app-that-presents-this-data-to-my-end-users" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>So can I go ahead and submit a battery/charging app that presents this data to my end-users?</h3>
+
+<p>Go ahead, but you're still likely to get rejected by Apple. Even though <code>UIDeviceListener</code> is likely going to pass any technical tests Apple runs on your App, the App Review team consists of human beings who are likely to detect that your app presents information that Apple doesn't deem "end-user appropriate"... The most likely outcome is your app getting rejected under section 2.19 of the App Review Guidelines:</p>
+
+<blockquote>
+<p>2.19       Apps that provide incorrect diagnostic or other inaccurate device data will be rejected</p>
+</blockquote>
+
+<p>Of course, the data presented is about as accurate as it could ever be, but clearly Apple has decided that for now they're not willing to present this data to end-users, and so expect to get this rejection. Still, <code>UIDeviceListener</code> can be useful for apps where the data obtained is not directly presented to the end-user.</p>
+
+<h3>
+<a id="what-kind-of-power-data-can-i-get" class="anchor" href="#what-kind-of-power-data-can-i-get" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What kind of power data can I get?</h3>
+
+<p>Pretty much every datapoint regarding battery and power known to the system is exposed. This includes the following:</p>
+
+<ul>
+<li>Battery design capacity</li>
+<li>Battery current raw capacity (in mAh)</li>
+<li>Battery cycle count</li>
+<li>Current battery temperature</li>
+<li>Current battery voltage</li>
+<li>Current battery discharge rate (device power consumption), in mA</li>
+</ul>
+
+<p>Additionally, when the device is plugged in there is rich information regarding the currently plugged in power source:</p>
+
+<ul>
+<li>The wattage and amperage of the currently plugged in adapter. This will even detect the new 29W USB-C adapter that's supported by the 12.9" iPad Pro.</li>
+<li>The actual battery charging rate (in mA), if the device is charging</li>
+<li>Confirmation that the device is actually charging. On some power hungry iOS devices you will often see devices consuming <em>some</em> battery power even though they are plugged in.</li>
+</ul>
+
+<h3>
+<a id="sample-dictionary" class="anchor" href="#sample-dictionary" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sample Dictionary</h3>
+
+<p>Here is a sample dictionary showing actual output from PowerData. Unfortunately the dictionaries have slight differences for different versions of iOS. Certain basic parameters are identical across all versions, but there are bits of data that are quite different across versions. Still, basics such as <code>AdapterDetails</code>, <code>AppleRawCurrentCapacity</code>, <code>AppleRawMaxCapacity</code>, and <code>CycleCount</code> are identical across all supported versions (so far tested iOS 7 through 9.3.1).</p>
+
+<pre><code>{
+    AdapterDetails =     {
+        Amperage = 1000;
+        Description = "usb host";
+        FamilyCode = "-536854528";
+        PMUConfiguration = 1000;
+        Watts = 5;
+    };
+    AdapterInfo = 16384;
+    Amperage = 1000;
+    AppleRawCurrentCapacity = 1279;
+    AppleRawMaxCapacity = 1275;
+    AtCriticalLevel = 0;
+    AtWarnLevel = 0;
+    BatteryData =     {
+        BatterySerialNumber = REDACTED;
+        ChemID = 355;
+        CycleCount = 524;
+        DesignCapacity = 1420;
+        Flags = 640;
+        FullAvailableCapacity = 1325;
+        ManufactureDate = REDACTED;
+        MaxCapacity = 1273;
+        MfgData = REDACTED;
+        QmaxCell0 = 1350;
+        StateOfCharge = 100;
+        Voltage = 4194;
+    };
+    BatteryInstalled = 1;
+    BatteryKey = "0003-default";
+    BootBBCapacity = 52;
+    BootCapacityEstimate = 2;
+    BootVoltage = 3518;
+    CFBundleIdentifier = "com.apple.driver.AppleD1815PMU";
+    ChargerConfiguration = 990;
+    CurrentCapacity = 1275;
+    CycleCount = 524;
+    DesignCapacity = 1420;
+    ExternalChargeCapable = 1;
+    ExternalConnected = 1;
+    FullyCharged = 1;
+    IOClass = AppleD1815PMUPowerSource;
+    IOFunctionParent64000000 = &lt;&gt;;
+    IOGeneralInterest = "IOCommand is not serializable";
+    IOInterruptControllers =     (
+        IOInterruptController34000000,
+        IOInterruptController34000000,
+        IOInterruptController34000000,
+        IOInterruptController34000000
+    );
+    IOInterruptSpecifiers =     (
+        &lt;03000000&gt;,
+        &lt;26000000&gt;,
+        &lt;04000000&gt;,
+        &lt;24000000&gt;
+    );
+    IOMatchCategory = AppleD1815PMUPowerSource;
+    IOPowerManagement =     {
+        CurrentPowerState = 2;
+        DevicePowerState = 2;
+        MaxPowerState = 2;
+    };
+    IOProbeScore = 0;
+    IOProviderClass = AppleD1815PMU;
+    InstantAmperage = 0;
+    IsCharging = 0;
+    Location = 0;
+    Manufacturer = A;
+    MaxCapacity = 1275;
+    Model = "0003-A";
+    Serial = REDACTED;
+    Temperature = 2590;
+    TimeRemaining = 0;
+    UpdateTime = 1461830702;
+    Voltage = 4182;
+    "battery-data" =     {
+        "0003-default" = &lt;...&gt;;
+        "0004-default" = &lt;...&gt;;
+        "0005-default" = &lt;...};
+    "built-in" = 1;
+}
+</code></pre>
+
+<h3>
+<a id="system-requirements" class="anchor" href="#system-requirements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>System Requirements</h3>
+
+<p><code>UIDeviceListener</code> has been extensively tested and runs well on essentially <strong>any</strong> iOS device (iPod Touch, iPad, and iPhone). <code>UIDeviceListener</code> supports iOS 7 and later, with 9.3.1 being the most recent version that's been tested.</p>
+
+<h3>
+<a id="how-does-it-work" class="anchor" href="#how-does-it-work" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How does it work?</h3>
+
+<p><code>UIDeviceListener</code> essentially hijacks the power data from iOS. We use <a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIDevice_Class/">UIDevice</a>, which is a public API for getting system information. Internally, <code>UIDevice</code> utilizes IOKit (and the specific power dictionary we're after) in order to get information for two specific properties: <a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIDevice_Class/#//apple_ref/occ/instp/UIDevice/batteryLevel">batteryLevel</a> and <a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIDevice_Class/#//apple_ref/occ/instp/UIDevice/batteryState">batteryState</a>.</p>
+
+<p><code>UIDeviceListener</code> relies on a CoreFoundation feature called <code>CFAllocator</code>, whereby apps are allowed to replace the default allocator for a given thread. We replace the default allocator with our own. That allows us to keep track of allocations being made on this one thread, at a very specific point in time (see below). This allows us to capture CF allocations made by anyone (including system components), and then examine those allocations, looking for our specific object.</p>
+
+<p>After it replaces the default allocator, <code>UIDeviceListener</code> tells <code>UIDevice</code> to listen for updates to the <code>batteryLevel</code> and <code>batteryState</code> properties (it does so by setting the <a href="https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIDevice_Class/#//apple_ref/occ/instp/UIDevice/batteryMonitoringEnabled">batteryMonitoringEnabled</a> property to <code>YES</code>). </p>
+
+<p>As updates come in on those two properties, the default CF allocator traps all CF objects created by <code>UIDevice</code>. Then, we configure <code>UIDevice</code> to notify us whenever new values have been set for <code>batteryLevel</code> and <code>batteryState</code> (we do that by installing a Key-Value Observer (KVO) on those two properties). In the KVO, we scan our default allocator's data structure, looking for our particular <code>CFDictionary</code>. Because <code>UIDevice</code> is still holding a reference to our desired CFDictionary while it sets the value of the properties, we are able to hijack that dictionary and get to the data.</p>
+
+<h3>
+<a id="how-reliable-is-that-approach" class="anchor" href="#how-reliable-is-that-approach" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How reliable is that approach?</h3>
+
+<p>This is obviously a hack. The approach works perfectly on iOS 7 through iOS 9.3.1, but that does not guarantee that future iOS updates won't break it. It relies on a number of implementation details in <code>UIDevice</code> that are definitely subject to change by Apple without warning. In that sense using this library is equivalent to using a private API, so consider yourself warned... </p>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
