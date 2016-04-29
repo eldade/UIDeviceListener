@@ -14,14 +14,20 @@ Using `UIDeviceListener` is quite simple. First, copy the source files (`UIDevic
 ```
     UIDeviceListener *listener = [UIDeviceListener sharedUIDeviceListener];
     
-    [listener startListenerWithNotificationBlock:^(NSDictionary *powerDataDictionary) {
-      // Use your powerDataDictionary here:
-      NSLog([powerDataDictionary description]);
-     }];
-
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(listenerDataUpdated:) name: kUIDeviceListenerNewDataNotification object:nil];
+    
+    [listener startListener];
+```
+Then, in your observer callback:
+```
+- (void) listenerDataUpdated: (NSNotification *) notification
+{
+    NSDictionary *powerDataDictionary = notification.userInfo;
+    // Use your power data here!
+}
 ```
 
-That's all there is to it. The block will be called when you first call startListenerWithNotificationBlock: and then periodically, as the power data is updated. On most devices this happens every 20 seconds or so, but it also happens in real-time as the device is plugged in and out. See below for a sample of the kind of data contained in the dictionary, or just run the PowerData sample on your device to see how the dictionary refreshes and what it contains.
+That's all there is to it. You will receive the first notification when you first call `startListener` and then afterwards periodically, as the power data is updated. On most devices this happens every 20 seconds or so, but it also happens in real-time as the device is plugged in and out. See below for a sample of the kind of data contained in the dictionary, or just run the PowerData sample program on your device to see how the dictionary refreshes and what it contains.
 
 ###Can this be used on the App Store?
 I have seen this code successfully deployed in production code on the App Store, but YMMV. 
