@@ -143,25 +143,26 @@ void myFree(void *ptr, void *info)
     listenerThreadDbg = listenerThread;
 #endif
     
-    // Start the listener thread. Actual listening to UIDevice won't start until we
-    // invoke startListenerWithNotificationBlock:
     [listenerThread start];
     
     return self;
 }
 
-- (void) startListenerWithNotificationBlock: (void (^)(NSDictionary *powerDataDictionary))dictReadyBlockParam
+- (void) startListener
 {
-    [self performSelector: @selector(startListenerWorker:) onThread:listenerThread withObject:dictReadyBlockParam waitUntilDone:NO];
+    // This can be called from any thread
+    [self performSelector: @selector(startListenerWorker) onThread:listenerThread withObject:nil waitUntilDone:NO];
 }
 
 - (void) stopListener
 {
+    // This can be called from any thread
     [self performSelector: @selector(stopListenerWorker) onThread:listenerThread withObject:nil waitUntilDone:NO];
 }
 
-- (void) startListenerWorker: (id) block
+- (void) startListenerWorker
 {
+    // This must be called from the listener thread
     VERIFY_LISTENER_THREAD();
     
     if ([UIDevice currentDevice].isBatteryMonitoringEnabled == NO)
@@ -169,14 +170,13 @@ void myFree(void *ptr, void *info)
         [[UIDevice currentDevice] addObserver: self forKeyPath: @"batteryState" options:NSKeyValueObservingOptionNew context: nil];
         [[UIDevice currentDevice] addObserver: self forKeyPath: @"batteryLevel" options:NSKeyValueObservingOptionNew context: nil];
         
-        dictReadyBlock = block;
-        
         [UIDevice currentDevice].batteryMonitoringEnabled = YES;   
     }
 }
 
 - (void) stopListenerWorker
 {
+    // This must be called from the listener thread
     VERIFY_LISTENER_THREAD();
     if ([UIDevice currentDevice].isBatteryMonitoringEnabled == YES)
     {
@@ -184,8 +184,6 @@ void myFree(void *ptr, void *info)
         
         [[UIDevice currentDevice] removeObserver: self forKeyPath: @"batteryState"];
         [[UIDevice currentDevice] removeObserver: self forKeyPath: @"batteryLevel"];
-        
-        dictReadyBlock = nil;
     }
 }
 
@@ -286,7 +284,7 @@ void myFree(void *ptr, void *info)
                     
                     CFDictionaryRef latestDictionary = (CFDictionaryRef) CFPropertyListCreateDeepCopy(_defaultAllocator, dict, kCFPropertyListImmutable);
                     
-                    if (dictReadyBlock != nil && latestDictionary != nil)
+                    if (latestDictionary != nil)
                     {
                         // Notify that new data is available, but that has to happen on the main thread.
                         // Because of the CFAllocator replacement, we generally shouldn't
@@ -294,7 +292,7 @@ void myFree(void *ptr, void *info)
                         dispatch_sync(dispatch_get_main_queue(), ^{
                             // Pass ownership of the CFDictionary to the main thread (using ARC):
                             NSDictionary *newPowerDataDictionary = CFBridgingRelease(latestDictionary);
-                            dictReadyBlock(newPowerDataDictionary);
+                            [[NSNotificationCenter defaultCenter] postNotificationName:kUIDeviceListenerNewDataNotification object:self userInfo:newPowerDataDictionary];
                         });
                     }
                     

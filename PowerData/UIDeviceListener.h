@@ -22,17 +22,18 @@
 
 #define __kCFAllocatorGCObjectMemory 0x400      /* GC:  memory needs to be finalized. */
 
+#define kUIDeviceListenerNewDataNotification @"UIDeviceListenerNewDataNotification"
+
 @interface UIDeviceListener : NSObject
 {
     NSThread *listenerThread;
     
     Class dictionaryClass;
-    void (^ dictReadyBlock) (NSDictionary *powerDict);
 }
 
 + (instancetype) sharedUIDeviceListener;
 
-- (void) startListenerWithNotificationBlock: (void (^)(NSDictionary *powerDataDictionary))dictReadyBlockParam;
+- (void) startListener;
 - (void) stopListener;
 
 @end

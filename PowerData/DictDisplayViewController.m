@@ -33,13 +33,14 @@
     
     UIDeviceListener *listener = [UIDeviceListener sharedUIDeviceListener];
     
-    [listener startListenerWithNotificationBlock:^(NSDictionary *powerDataDictionary) {
-        self.textView.text = [powerDataDictionary description];
-        [[UIDeviceListener sharedUIDeviceListener] stopListener];
-        [[UIDeviceListener sharedUIDeviceListener] startListenerWithNotificationBlock:^(NSDictionary *powerDataDictionary) {
-            self.textView.text = [powerDataDictionary description];
-        }];
-    }];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(listenerDataUpdated:) name: kUIDeviceListenerNewDataNotification object:nil];
+    
+    [listener startListener];
+}
+
+- (void) listenerDataUpdated: (NSNotification *) notification
+{
+    self.textView.text = [notification.userInfo description];
 }
 
 - (void)didReceiveMemoryWarning {
