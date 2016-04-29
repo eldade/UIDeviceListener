@@ -30,7 +30,7 @@ The App Store generally has two levels of private API tests. One test takes plac
 Again, `UIDeviceListener` does obtain "private" data, but it does so without invoking any private interfaces. Essentially, it is using public APIs to "steal" the relevant data from `UIDevice` in runtime.
 
 ###So can I go ahead and submit a battery/charging app that presents this data to my end-users?
-Go ahead, but you're still likely to get rejected by Apple. Even though `UIDeviceListener` is likely going to pass any technical tests Apple runs on your App, the App Review team consists of human beings who are likely to detect that your app presents information that Apple doesn't deem "end-user appropriate"... The most likely outcome is your app getting rejected under section 2.19:
+Go ahead, but you're still likely to get rejected by Apple. Even though `UIDeviceListener` is likely going to pass any technical tests Apple runs on your App, the App Review team consists of human beings who are likely to detect that your app presents information that Apple doesn't deem "end-user appropriate"... The most likely outcome is your app getting rejected under section 2.19 of the App Review Guidelines:
 >  2.19       Apps that provide incorrect diagnostic or other inaccurate device data will be rejected
 
 Of course, the data presented is about as accurate as it could ever be, but clearly Apple has decided that for now they're not willing to present this data to end-users, and so expect to get this rejection. Still, `UIDeviceListener` can be useful for apps where the data obtained is not directly presented to the end-user.
