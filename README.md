@@ -1,4 +1,4 @@
-# PowerData
+## PowerData (sample program for `UIDeviceListener`)
 PowerData is a sample program that displays device power information for iOS devices. The magic is that this is done without relying on any private APIs. The underlying library, `UIDeviceListener`, is extremely easy to use and runs well on all recent versions of iOS.
 
 PowerData presents raw data from the system regarding battery capacity, cycle count, state of charge, and much much more. PowerData also presents detailed information regarding the currently plugged in power adapter. None of this is currently (as of iOS 9) available in any public API.
