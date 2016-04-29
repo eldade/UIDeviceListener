@@ -9,18 +9,19 @@ The information provided by `UIDeviceListener` is available in the IORegistry an
 
 ###Usage
 
-Using `UIDeviceListener` is quite simple. First, copy the source files (`UIDeviceListener.h` and `UIDeviceListener.mm`) to your project. Then, initialize the listener as follows:
+Using `UIDeviceListener` is quite simple. First, copy the source files (`UIDeviceListener.h` and `UIDeviceListener.mm`) to your project. Then, import `UIDeviceListener.h` into your source file and initialize the listener as follows:
 
 ```
     UIDeviceListener *listener = [UIDeviceListener sharedUIDeviceListener];
     
     [listener startListenerWithNotificationBlock:^(NSDictionary *powerDataDictionary) {
+      // Use your powerDataDictionary here:
       NSLog([powerDataDictionary description]);
      }];
 
 ```
 
-That's all there is to it. The block will be called when you first call startListenerWithNotificationBlock: and then periodically, as the power data is updated. On most devices this happens every 20 seconds or so, but it also happens in real-time as the device is plugged in and out. See below for a sample of the kind of data contained in the dictionary.
+That's all there is to it. The block will be called when you first call startListenerWithNotificationBlock: and then periodically, as the power data is updated. On most devices this happens every 20 seconds or so, but it also happens in real-time as the device is plugged in and out. See below for a sample of the kind of data contained in the dictionary, or just run the PowerData sample on your device to see how the dictionary refreshes and what it contains.
 
 ###Can this be used on the App Store?
 I have seen this code successfully deployed in production code on the App Store, but YMMV. 
