@@ -5,7 +5,7 @@ PowerData presents raw data from the system regarding battery capacity, cycle co
 
 ###No private APIs!
 
-The information provided by `UIDeviceListener` is available in the IORegistry and could be gathered relatively easily by directly calling IOKit. Unfortunately, IOKit is considered a private framework and so using it almost guarantees that your app would be rejected by Apple's App Review team if you were to submit it to the App Store. `UIDeviceListener` doesn't use IOKit, neither directly nor indirectly. `UIDeviceListener` also doesn't rely on any other private API. Please see the [How it works](###How does it work?) section below to learn more.
+The information provided by `UIDeviceListener` is available in the IORegistry and could be gathered relatively easily by directly calling IOKit. Unfortunately, IOKit is considered a private framework and so using it almost guarantees that your app would be rejected by Apple's App Review team if you were to submit it to the App Store. `UIDeviceListener` doesn't use IOKit, neither directly nor indirectly. `UIDeviceListener` also doesn't rely on any other private API. Please see the [How it works](#how-does-it-work) section below to learn more.
 
 ###Usage
 
