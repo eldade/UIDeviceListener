@@ -14,14 +14,20 @@ Using `UIDeviceListener` is quite simple. First, copy the source files (`UIDevic
 ```
     UIDeviceListener *listener = [UIDeviceListener sharedUIDeviceListener];
     
-    [listener startListenerWithNotificationBlock:^(NSDictionary *powerDataDictionary) {
-      // Use your powerDataDictionary here:
-      NSLog([powerDataDictionary description]);
-     }];
-
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(listenerDataUpdated:) name: kUIDeviceListenerNewDataNotification object:nil];
+    
+    [listener startListener];
+```
+Then, in your observer callback:
+```
+- (void) listenerDataUpdated: (NSNotification *) notification
+{
+    NSDictionary *powerDataDictionary = notification.userInfo;
+    // Use your power data here!
+}
 ```
 
-That's all there is to it. The block will be called when you first call startListenerWithNotificationBlock: and then periodically, as the power data is updated. On most devices this happens every 20 seconds or so, but it also happens in real-time as the device is plugged in and out. See below for a sample of the kind of data contained in the dictionary, or just run the PowerData sample on your device to see how the dictionary refreshes and what it contains.
+That's all there is to it. You will receive the first notification when you first call `startListener` and then afterwards periodically, as the power data is updated. On most devices this happens every 20 seconds or so, but it also happens in real-time as the device is plugged in and out. See below for a sample of the kind of data contained in the dictionary, or just run the PowerData sample program on your device to see how the dictionary refreshes and what it contains.
 
 ###Can this be used on the App Store?
 I have seen this code successfully deployed in production code on the App Store, but YMMV. 
@@ -147,6 +153,6 @@ Here is a sample dictionary showing actual output from PowerData. Unfortunately 
 
 After it replaces the default allocator, `UIDeviceListener` tells `UIDevice` to listen for updates to the `batteryLevel` and `batteryState` properties (it does so by setting the [batteryMonitoringEnabled](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIDevice_Class/#//apple_ref/occ/instp/UIDevice/batteryMonitoringEnabled) property to `YES`). 
 
-As updates come in on those two properties, the default CF allocator traps all CF objects created by `UIDevice`. Then, we configure `UIDevice` to notify us whenever new values have been set for `batteryLevel` and `batteryState` (we do that by installing a Key-Value Observer (KVO) on those two properties). In the KVO, we scan our default allocator's data structure, looking for our particular `CFDictionary`. Because `UIDevice` is still holding a reference to our desired CFDictionary while it sets the value of the properties, we are able to hijack that dictionary and get to the data.
+As updates come in on those two properties, the default CF allocator traps all CF objects created by `UIDevice`. Then, we configure `UIDevice` to notify us whenever new values have been set for `batteryLevel` and `batteryState` (we do that by installing a Key-Value Observer (KVO) on those two properties). In the KVO, we scan our default allocator's data structure, looking for our particular `CFDictionary`. Because `UIDevice` is still holding a reference to our desired `CFDictionary` while it sets the value of the properties, we are able to hijack that dictionary and get to the data.
 ###How reliable is that approach?
 This is obviously a hack. The approach works perfectly on iOS 7 through iOS 9.3.1, but that does not guarantee that future iOS updates won't break it. It relies on a number of implementation details in `UIDevice` that are definitely subject to change by Apple without warning. In that sense using this library is equivalent to using a private API, so consider yourself warned... 
