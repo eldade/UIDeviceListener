@@ -13,6 +13,7 @@
 		51BDCCA31CD1E04C000519E2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 51BDCC9E1CD1E04C000519E2 /* Main.storyboard */; };
 		51BDCCA41CD1E04C000519E2 /* DictDisplayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51BDCCA01CD1E04C000519E2 /* DictDisplayViewController.m */; };
 		51BDCCA51CD1E04C000519E2 /* UIDeviceListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 51BDCCA21CD1E04C000519E2 /* UIDeviceListener.mm */; };
+		51D307711CD5ACE600D6932B /* EEPowerInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 51D307701CD5ACE600D6932B /* EEPowerInformation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,8 @@
 		51BDCCA11CD1E04C000519E2 /* UIDeviceListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIDeviceListener.h; sourceTree = "<group>"; };
 		51BDCCA21CD1E04C000519E2 /* UIDeviceListener.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = UIDeviceListener.mm; sourceTree = "<group>"; };
 		51BDCCA71CD1F11D000519E2 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		51D3076F1CD5ACE600D6932B /* EEPowerInformation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EEPowerInformation.h; sourceTree = "<group>"; };
+		51D307701CD5ACE600D6932B /* EEPowerInformation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EEPowerInformation.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +67,8 @@
 				51BDCCA61CD1F034000519E2 /* UI */,
 				51BDCCA11CD1E04C000519E2 /* UIDeviceListener.h */,
 				51BDCCA21CD1E04C000519E2 /* UIDeviceListener.mm */,
+				51D3076F1CD5ACE600D6932B /* EEPowerInformation.h */,
+				51D307701CD5ACE600D6932B /* EEPowerInformation.m */,
 				51BDCC931CD1DFEC000519E2 /* Assets.xcassets */,
 				51BDCC981CD1DFEC000519E2 /* Info.plist */,
 				51BDCC871CD1DFEC000519E2 /* Supporting Files */,
@@ -164,6 +169,7 @@
 				51BDCCA41CD1E04C000519E2 /* DictDisplayViewController.m in Sources */,
 				51BDCC891CD1DFEC000519E2 /* main.m in Sources */,
 				51BDCCA51CD1E04C000519E2 /* UIDeviceListener.mm in Sources */,
+				51D307711CD5ACE600D6932B /* EEPowerInformation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

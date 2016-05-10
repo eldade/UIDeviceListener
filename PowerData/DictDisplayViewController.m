@@ -20,8 +20,12 @@
 
 #import "DictDisplayViewController.h"
 #import "UIDeviceListener.h"
+#import "EEPowerInformation.h"
 
-@interface DictDisplayViewController ()
+@interface DictDisplayViewController () <EEPowerInformationDelegate>
+{
+    EEPowerInformation *powerInformation;
+}
 
 @end
 
@@ -31,16 +35,47 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    UIDeviceListener *listener = [UIDeviceListener sharedUIDeviceListener];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(listenerDataUpdated:) name: kUIDeviceListenerNewDataNotification object:nil];
-    
-    [listener startListener];
+    powerInformation = [[EEPowerInformation alloc] init];
+    powerInformation.delegate = self;
 }
 
-- (void) listenerDataUpdated: (NSNotification *) notification
+- (void) powerInformationUpdated: (EEPowerInformation *) powerInfo
 {
-    self.textView.text = [notification.userInfo description];
+    self.textView.text = [NSString stringWithFormat:@"\n\nData updated on %@\n"
+                                                    @"batteryDesignCapacity=%ld\n"
+                                                    @"batteryCycleCount=%ld\n"
+                                                    @"batteryMaximumCapacity=%ld\n"
+                                                    @"batteryHealth=%f\n"
+                                                    @"batteryRawBatteryLevel=%f\n"
+                                                    @"voltage=%f\n"
+                                                    @"isPluggedIn=%d\n"
+                                                    @"isCharging=%d\n"
+                                                    @"isFullyCharged=%d\n"
+                                                    @"batteryTemperature=%f\n"
+                                                    @"adapterAmperage=%ld\n"
+                                                    @"adapterWattage=%ld\n"
+                                                    @"chargerConfiguration=%ld\n"
+                                                    @"chargingAmperage=%ld\n"
+                                                    @"dischargeAmperage=%ld\n"
+                                                    @"devicePowerConsumption=%f\n",
+                                                    [powerInformation.dataTimestamp descriptionWithLocale: [NSLocale currentLocale]],
+                                                    powerInformation.batteryDesignCapacity,
+                                                    powerInformation.batteryCycleCount,
+                                                    powerInformation.batteryMaximumCapacity,
+                                                    powerInformation.batteryHealth,
+                                                    powerInformation.batteryRawLevel,
+                                                    powerInformation.voltage,
+                                                    powerInformation.isPluggedIn,
+                                                    powerInformation.isCharging,
+                                                    powerInformation.isFullyCharged,
+                                                    powerInformation.batteryTemperature,
+                                                    powerInformation.adapterAmperage,
+                                                    powerInformation.adapterWattage,
+                                                    powerInformation.chargerConfiguration,
+                                                    powerInformation.chargingAmperage,
+                                                    powerInformation.dischargeAmperage,
+                                                    powerInformation.devicePowerConsumption];
+    
 }
 
 - (void)didReceiveMemoryWarning {
