@@ -29,6 +29,21 @@ Then, in your observer callback:
 
 That's all there is to it. You will receive the first notification when you first call `startListener` and then afterwards periodically, as the power data is updated. On most devices this happens every 20 seconds or so, but it also happens in real-time as the device is plugged in and out. See below for a sample of the kind of data contained in the dictionary, or just run the PowerData sample program on your device to see how the dictionary refreshes and what it contains.
 
+###Using `EEPowerInformation`
+Alternatively, you can use `EEPowerInformation` and not even worry about `UIDeviceListener`. `EEPowerInformation` is an abstracted power information class that uses `UIDeviceListener` to obtain the information, chews it up, makes up for any iOS differences, and exposes pretty properties with all of the pertinent data. To use, simply initialize as follows:
+```
+    powerInformation = [[EEPowerInformation alloc] init];
+    powerInformation.delegate = self;
+```
+
+Then, listen to the delegate callback as follows:
+```
+- (void) powerInformationUpdated: (EEPowerInformation *) powerInfo
+{
+    NSLog(@"Battery cycle count: %ld", powerInfo.batteryCycleCount);
+}
+```
+`EEPowerInformation` adds a number of convenience methods that might save you some time figuring out what each property means. `EEPowerInformation` is extensively documented in `EEPowerInformation.h`.
 ###Can this be used on the App Store?
 I have seen this code successfully deployed in production code on the App Store, but YMMV. 
 
