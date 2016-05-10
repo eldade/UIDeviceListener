@@ -1,7 +1,7 @@
-## PowerData (sample program for `UIDeviceListener`)
-PowerData is a sample program that displays device power information for iOS devices. The magic is that this is done without relying on any private APIs. The underlying library, `UIDeviceListener`, is extremely easy to use and runs well on all recent versions of iOS.
+## `UIDeviceListener`
+`UIDeviceListener` is a sample program that displays device power information for iOS devices. The magic is that this is done without relying on any private APIs. The underlying library, `UIDeviceListener`, is extremely easy to use and runs well on all recent versions of iOS.
 
-PowerData presents raw data from the system regarding battery capacity, cycle count, state of charge, and much much more. PowerData also presents detailed information regarding the currently plugged in power adapter. None of this is currently (as of iOS 9) available in any public API.
+`UIDeviceListener` retrieves raw data from the system regarding battery capacity, cycle count, state of charge, and much much more. `UIDeviceListener` also presents detailed information regarding the currently plugged in power adapter. None of this is currently (as of iOS 9) available in any public API.
 
 ###No private APIs!
 
@@ -27,7 +27,7 @@ Then, in your observer callback:
 }
 ```
 
-That's all there is to it. You will receive the first notification when you first call `startListener` and then afterwards periodically, as the power data is updated. On most devices this happens every 20 seconds or so, but it also happens in real-time as the device is plugged in and out. See below for a sample of the kind of data contained in the dictionary, or just run the PowerData sample program on your device to see how the dictionary refreshes and what it contains.
+That's all there is to it. You will receive the first notification when you first call `startListener` and then afterwards periodically, as the power data is updated. On most devices this happens every 20 seconds or so, but it also happens in real-time as the device is plugged in and out. See below for a sample of the kind of data contained in the dictionary, or just run the sample program on your device to see how the dictionary refreshes and what it contains.
 
 ###Using `EEPowerInformation`
 Alternatively, you can use `EEPowerInformation` and not even worry about `UIDeviceListener`. `EEPowerInformation` is an abstracted power information class that uses `UIDeviceListener` to obtain the information, chews it up, makes up for any iOS differences, and exposes pretty properties with all of the pertinent data. To use, simply initialize as follows:
@@ -72,7 +72,7 @@ Additionally, when the device is plugged in there is rich information regarding 
 - Confirmation that the device is actually charging. On some power hungry iOS devices you will often see devices consuming *some* battery power even though they are plugged in.
 
 ### Sample Dictionary
-Here is a sample dictionary showing actual output from PowerData. Unfortunately the dictionaries have slight differences for different versions of iOS. Certain basic parameters are identical across all versions, but there are bits of data that are quite different across versions. Still, basics such as `AdapterDetails`, `AppleRawCurrentCapacity`, `AppleRawMaxCapacity`, and `CycleCount` are identical across all supported versions (so far tested iOS 7 through 9.3.1).
+Here is a sample dictionary showing actual output from `UIDeviceListener`. Unfortunately the dictionaries have slight differences for different versions of iOS. Certain basic parameters are identical across all versions, but there are bits of data that are quite different across versions. Still, basics such as `AdapterDetails`, `AppleRawCurrentCapacity`, `AppleRawMaxCapacity`, and `CycleCount` are identical across all supported versions (so far tested iOS 7 through 9.3.1).
 
 ```
 {
