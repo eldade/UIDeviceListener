@@ -3,6 +3,8 @@
 
 `UIDeviceListener` retrieves raw data from the system regarding battery capacity, cycle count, state of charge, and much much more. `UIDeviceListener` also presents detailed information regarding the currently plugged in power adapter. None of this is currently (as of iOS 9) available in any public API.
 
+**NOTE: As of iOS 10 beta 1, it appears that Apple has removed nearly all power information from this dictionary, and there doesn't appear to be any way to retrieve this information. The information appears to have been removed from IOKit.**
+
 ###No private APIs!
 
 The information provided by `UIDeviceListener` is available in the IORegistry and could be gathered relatively easily by directly calling IOKit. Unfortunately, IOKit is considered a private framework and so using it almost guarantees that your app would be rejected by Apple's App Review team if you were to submit it to the App Store. `UIDeviceListener` doesn't use IOKit, neither directly nor indirectly. `UIDeviceListener` also doesn't rely on any other private API. Please see the [How it works](#how-does-it-work) section below to learn more.
