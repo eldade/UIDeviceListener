@@ -5,11 +5,11 @@
 
 **NOTE: As of iOS 10 beta 1, it appears that Apple has removed nearly all power information from this dictionary, and there doesn't appear to be any way to retrieve this information. The information appears to have been removed from IOKit.**
 
-###No private APIs!
+### No private APIs!
 
 The information provided by `UIDeviceListener` is available in the IORegistry and could be gathered relatively easily by directly calling IOKit. Unfortunately, IOKit is considered a private framework and so using it almost guarantees that your app would be rejected by Apple's App Review team if you were to submit it to the App Store. `UIDeviceListener` doesn't use IOKit, neither directly nor indirectly. `UIDeviceListener` also doesn't rely on any other private API. Please see the [How it works](#how-does-it-work) section below to learn more.
 
-###Usage
+### Usage
 
 Using `UIDeviceListener` is quite simple. First, copy the source files (`UIDeviceListener.h` and `UIDeviceListener.mm`) to your project. Then, import `UIDeviceListener.h` into your source file and initialize the listener as follows:
 
@@ -31,7 +31,7 @@ Then, in your observer callback:
 
 That's all there is to it. You will receive the first notification when you first call `startListener` and then afterwards periodically, as the power data is updated. On most devices this happens every 20 seconds or so, but it also happens in real-time as the device is plugged in and out. See below for a sample of the kind of data contained in the dictionary, or just run the sample program on your device to see how the dictionary refreshes and what it contains.
 
-###Using `EEPowerInformation`
+### Using `EEPowerInformation`
 Alternatively, you can use `EEPowerInformation` and not even worry about `UIDeviceListener`. `EEPowerInformation` is an abstracted power information class that uses `UIDeviceListener` to obtain the information, chews it up, makes up for any iOS differences, and exposes pretty properties with all of the pertinent data. To use, simply initialize as follows:
 ```
     powerInformation = [[EEPowerInformation alloc] init];
@@ -46,20 +46,14 @@ Then, listen to the delegate callback as follows:
 }
 ```
 `EEPowerInformation` adds a number of convenience methods that might save you some time figuring out what each property means. `EEPowerInformation` is extensively documented in `EEPowerInformation.h`.
-###Can this be used on the App Store?
-I have seen this code successfully deployed in production code on the App Store, but YMMV. 
 
-The App Store generally has two levels of private API tests. One test takes place at the moment when a binary is submitted, and is essentially a simple static check to make sure your binary contains no references to any private API symbols. `UIDeviceListener` will pass this test because it simply doesn't rely on any private APIs. The second test, which appears to only be performed on apps that are deemed 'suspicious' by the App Store Review team, will also not detect `UIDeviceListener`. 
-
-Again, `UIDeviceListener` does obtain "private" data, but it does so without invoking any private interfaces. Essentially, it is using public APIs to "steal" the relevant data from `UIDevice` in runtime.
-
-###So can I go ahead and submit a battery/charging app that presents this data to my end-users?
+### Can I go ahead and submit a battery/charging app that presents this data to my end-users?
 Go ahead, but you're still likely to get rejected by Apple. Even though `UIDeviceListener` is likely going to pass any technical tests Apple runs on your App, the App Review team consists of human beings who are likely to detect that your app presents information that Apple doesn't deem "end-user appropriate"... The most likely outcome is your app getting rejected under section 2.19 of the App Review Guidelines:
 >  2.19       Apps that provide incorrect diagnostic or other inaccurate device data will be rejected
 
 Of course, the data presented is about as accurate as it could ever be, but clearly Apple has decided that for now they're not willing to present this data to end-users, and so expect to get this rejection. Still, `UIDeviceListener` can be useful for apps where the data obtained is not directly presented to the end-user.
 
-###What kind of power data can I get?
+### What kind of power data can I get?
 Pretty much every datapoint regarding battery and power known to the system is exposed. This includes the following:
 - Battery design capacity
 - Battery current raw capacity (in mAh)
@@ -160,10 +154,10 @@ Here is a sample dictionary showing actual output from `UIDeviceListener`. Unfor
 }
 ```
 
-###System Requirements
+### System Requirements
 `UIDeviceListener` has been extensively tested and runs well on essentially **any** iOS device (iPod Touch, iPad, and iPhone). `UIDeviceListener` supports iOS 7 and later, with 9.3.1 being the most recent version that's been tested.
 
-###How does it work?
+### How does it work?
 `UIDeviceListener` essentially hijacks the power data from iOS. We use [UIDevice](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIDevice_Class/), which is a public API for getting system information. Internally, `UIDevice` utilizes IOKit (and the specific power dictionary we're after) in order to get information for two specific properties: [batteryLevel](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIDevice_Class/#//apple_ref/occ/instp/UIDevice/batteryLevel) and [batteryState](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIDevice_Class/#//apple_ref/occ/instp/UIDevice/batteryState).
 
 `UIDeviceListener` relies on a CoreFoundation feature called `CFAllocator`, whereby apps are allowed to replace the default allocator for a given thread. We replace the default allocator with our own. That allows us to keep track of allocations being made on this one thread, at a very specific point in time (see below). This allows us to capture CF allocations made by anyone (including system components), and then examine those allocations, looking for our specific object.
@@ -171,5 +165,5 @@ Here is a sample dictionary showing actual output from `UIDeviceListener`. Unfor
 After it replaces the default allocator, `UIDeviceListener` tells `UIDevice` to listen for updates to the `batteryLevel` and `batteryState` properties (it does so by setting the [batteryMonitoringEnabled](https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIDevice_Class/#//apple_ref/occ/instp/UIDevice/batteryMonitoringEnabled) property to `YES`). 
 
 As updates come in on those two properties, the default CF allocator traps all CF objects created by `UIDevice`. Then, we configure `UIDevice` to notify us whenever new values have been set for `batteryLevel` and `batteryState` (we do that by installing a Key-Value Observer (KVO) on those two properties). In the KVO, we scan our default allocator's data structure, looking for our particular `CFDictionary`. Because `UIDevice` is still holding a reference to our desired `CFDictionary` while it sets the value of the properties, we are able to hijack that dictionary and get to the data.
-###How reliable is that approach?
+### How reliable is that approach?
 This is obviously a hack. The approach works perfectly on iOS 7 through iOS 9.3.1, but that does not guarantee that future iOS updates won't break it. It relies on a number of implementation details in `UIDevice` that are definitely subject to change by Apple without warning. In that sense using this library is equivalent to using a private API, so consider yourself warned... 
